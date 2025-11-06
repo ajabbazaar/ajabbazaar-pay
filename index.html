@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Payment — AJAB BAZAAR</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#9aa6b2}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:linear-gradient(180deg,#071025 0%,#081723 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border-radius:12px;padding:22px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(2,6,23,0.6);}
+    h1{font-size:20px;margin:0 0 10px;text-align:center}
+    p.muted{color:var(--muted);margin:6px 0 14px;font-size:13px;text-align:center}
+    .qr-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:12px}
+    #qrcode{padding:8px;background:#fff;border-radius:6px}
+    .amount{font-weight:700;font-size:18px;color:var(--accent);display:none}
+    button, .link-btn{cursor:pointer;border:0;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.04);color:inherit;font-weight:600;transition:all .2s ease}
+    button.primary{background:linear-gradient(90deg,var(--accent),#3b82f6);color:#052225}
+    button.primary:hover{opacity:0.9;transform:scale(1.03)}
+    .small{font-size:13px;padding:8px 10px}
+    .btn-center{display:flex;justify-content:center;margin-bottom:10px}
+    .copy-box{display:flex;gap:8px;align-items:center;margin:10px 0}
+    .copy-text{background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;flex:1;word-break:break-all}
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;background:#0b1220;padding:10px 14px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,0.6);display:none;color:var(--accent)}
+    .hint{font-size:13px;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5}
+    a.small-link{font-size:13px;color:var(--accent);text-decoration:none}
+    .wa-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#25d366,#128c7e);color:#fff;border:0;padding:10px 18px;border-radius:8px;font-weight:600;text-decoration:none;margin-top:10px;transition:0.25s}
+    .wa-btn:hover{transform:scale(1.05);opacity:.9}
+    .wa-btn svg{width:18px;height:18px;fill:#fff}
+    .wa-center{display:flex;justify-content:center;margin-top:6px}
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1>Pay — AJAB BAZAAR</h1>
+    <p class="muted">Scan the QR or tap the UPI link to pay. All-India delivery available.</p>
+
+    <div class="qr-wrap">
+      <div id="qrcode"></div>
+      <div class="amount" id="amountLabel">Amount: ₹<span id="amountValue"></span></div>
+      <div class="hint" id="upiLinkWrap">
+        <a class="small-link" id="upiLink" href="#" target="_blank" rel="noopener">Open in UPI app</a>
+      </div>
+    </div>
+
+    <div class="btn-center">
+      <button class="primary small" id="downloadBtn">Download QR</button>
+    </div>
+
+    <div style="margin-top:6px">
+      <div class="copy-box">
+        <div class="copy-text">Mobile: <strong id="mobileText">7601952219</strong></div>
+        <button class="small" id="copyMobile">Copy</button>
+      </div>
+
+      <div class="copy-box">
+        <div class="copy-text">UPI ID: <strong id="upiText">ajabbazaar@ybl</strong></div>
+        <button class="small" id="copyUPI">Copy</button>
+      </div>
+    </div>
+
+    <p class="hint">
+      অনুগ্রহ করে পেমেন্টের স্ক্রিনশটটি আমাদের সাথে শেয়ার করুন।<br>
+      Please share the payment screenshot with us.
+    </p>
+
+    <div class="wa-center">
+      <a id="waButton" class="wa-btn" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 0C7.164 0 0 7.163 0 16c0 2.818.73 5.568 2.118 7.987L0 32l8.284-2.159A15.896 15.896 0 0016 32c8.836 0 16-7.163 16-16S24.836 0 16 0zm0 29.333c-2.485 0-4.912-.667-7.029-1.93l-.503-.299-4.905 1.277 1.309-4.778-.326-.507A13.294 13.294 0 012.667 16C2.667 8.64 8.64 2.667 16 2.667S29.333 8.64 29.333 16 23.36 29.333 16 29.333zm7.534-9.733c-.412-.206-2.436-1.206-2.815-1.344-.379-.14-.656-.206-.932.206-.272.412-1.07 1.344-1.312 1.617-.242.27-.483.31-.895.103-.412-.206-1.739-.64-3.312-2.037-1.224-1.09-2.053-2.436-2.295-2.848-.242-.412-.026-.635.18-.841.185-.184.412-.482.618-.724.206-.241.275-.412.414-.685.14-.27.07-.514-.034-.724-.104-.206-.933-2.246-1.28-3.07-.337-.81-.68-.698-.932-.71l-.79-.014c-.242 0-.655.094-.999.482-.344.412-1.312 1.281-1.312 3.118 0 1.837 1.343 3.61 1.531 3.86.185.27 2.642 4.03 6.398 5.656.894.385 1.591.616 2.135.789.896.285 1.713.246 2.357.149.719-.106 2.436-.995 2.78-1.955.344-.96.344-1.785.242-1.955-.102-.171-.374-.275-.786-.48z"/></svg>
+        Send Screenshot on WhatsApp
+      </a>
+    </div>
+
+    <p class="muted" style="margin-top:12px;font-size:13px">
+      Note: On Android phones tapping the UPI link will open installed UPI apps. On iPhone the user will be prompted to open supported apps.
+    </p>
+  </div>
+
+  <div class="toast" id="toast">Copied ✓</div>
+
+<script>
+(function(){
+  const UPI_ID = "ajabbazaar@ybl";
+  const MOBILE = "7601952219";
+  const MERCHANT_NAME = "AJAB BAZAAR";
+
+  function getQueryParam(name){
+    const url = new URL(location.href);
+    const v = url.searchParams.get(name);
+    if(!v) return null;
+    const cleaned = v.replace(/[^0-9.]/g,'');
+    return cleaned || null;
+  }
+
+  const amount = getQueryParam('amount'); // may be null if not given
+
+  function buildUpiUri(amount, txnId){
+    const params = new URLSearchParams();
+    params.set('pa', UPI_ID);
+    params.set('pn', MERCHANT_NAME);
+    if(amount) params.set('am', amount);
+    params.set('cu', 'INR');
+    if(txnId) params.set('tr', txnId);
+    params.set('tn', 'Order Payment');
+    return 'upi://pay?' + params.toString();
+  }
+
+  const amountLabel = document.getElementById('amountLabel');
+  const amountValue = document.getElementById('amountValue');
+  if(amount){
+    amountValue.textContent = amount;
+    amountLabel.style.display = 'block';
+  } else {
+    amountLabel.style.display = 'none';
+  }
+
+  function generateQr(){
+    const container = document.getElementById('qrcode');
+    container.innerHTML = "";
+    const txnId = 'AJAB' + Date.now().toString().slice(-6);
+    const uri = buildUpiUri(amount, txnId);
+    new QRCode(container, {
+      text: uri,
+      width: 220,
+      height: 220,
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    const upiLinkEl = document.getElementById('upiLink');
+    upiLinkEl.href = uri;
+    upiLinkEl.textContent = amount ? `Open UPI app / Pay ₹${amount}` : "Open in UPI app";
+
+    const waMsg = amount
+      ? `Hello AJAB BAZAAR, I have completed my payment of ₹${amount}. Here is my payment screenshot.`
+      : `Hello AJAB BAZAAR, I have completed my payment. Here is my payment screenshot.`;
+    document.getElementById('waButton').href = `https://wa.me/91${MOBILE}?text=${encodeURIComponent(waMsg)}`;
+  }
+
+  generateQr();
+
+  document.getElementById('downloadBtn').addEventListener('click', function(){
+    const container = document.getElementById('qrcode');
+    const canvas = container.querySelector('canvas');
+    if(canvas){
+      const dataURL = canvas.toDataURL('image/png');
+      downloadDataURL(dataURL, 'ajabbazaar-upi.png');
+    } else {
+      const img = container.querySelector('img');
+      if(img){
+        const src = img.src;
+        downloadDataURL(src, 'ajabbazaar-upi.png');
+      } else {
+        showToast('Cannot find QR to download', true);
+      }
+    }
+  });
+
+  function downloadDataURL(dataURL, filename){
+    const a = document.createElement('a');
+    a.href = dataURL;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    showToast('Downloaded');
+  }
+
+  function copyText(txt, label){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(()=> showToast(label + ' copied'));
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = txt;
+      document.body.appendChild(ta);
+      ta.select();
+      try{ document.execCommand('copy'); showToast(label + ' copied'); }
+      catch(e){ showToast('Copy failed', true); }
+      ta.remove();
+    }
+  }
+  document.getElementById('copyMobile').addEventListener('click', ()=> copyText(MOBILE, 'Mobile'));
+  document.getElementById('copyUPI').addEventListener('click', ()=> copyText(UPI_ID, 'UPI ID'));
+
+  let toastTimer=null;
+  function showToast(text='Copied ✓', error=false){
+    const t = document.getElementById('toast');
+    t.textContent = text;
+    t.style.background = error ? '#2b0b0b' : '#071826';
+    t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.style.display='none', 1800);
+  }
+})();
+</script>
+</body>
+</html>
